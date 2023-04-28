@@ -48,7 +48,7 @@ class RestorationModel:
         )
         self.bg_upsampler = RealESRGANer(
             scale=2,
-            model_path=Path(self._data_dir) / ESRGAN_PATH,
+            model_path=str(Path(self._data_dir) / ESRGAN_PATH),
             model=self.model,
             tile=bg_tile,
             tile_pad=10,
@@ -56,7 +56,7 @@ class RestorationModel:
             half=True,
         )
         self.restorer = GFPGANer(
-            model_path=Path(self._data_dir) / GFPGAN_PATH,
+            model_path=str(Path(self._data_dir) / GFPGAN_PATH),
             upscale=upscale,
             arch=arch,
             channel_multiplier=channel,
