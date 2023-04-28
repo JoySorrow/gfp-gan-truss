@@ -1,14 +1,12 @@
 import logging
-import tempfile
+from pathlib import Path
 
 import base64
 from io import BytesIO
 import cv2
 import numpy as np
-import requests
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from gfpgan import GFPGANer
-from model.utils import upload_file_to_s3
 from PIL import Image
 from realesrgan import RealESRGANer
 
@@ -25,10 +23,10 @@ only_center_face = False  # Only restore the center face
 paste_back = True  # Paste the restored faces back to images
 
 # The model path
-GFPGAN_PATH = "https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth"
+GFPGAN_PATH = "GFPGANv1.3.pth"
 # The background upsampler
 ESRGAN_PATH = (
-    "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth"
+    "RealESRGAN_x2plus.pth"
 )
 
 RESIZE_DEFAULT_MAX = 1400
@@ -36,6 +34,7 @@ RESIZE_DEFAULT_MAX = 1400
 
 class RestorationModel:
     def __init__(self, **kwargs) -> None:
+        self._data_dir = kwargs.get("data_dir")
         self._config = kwargs.get("config")
 
     def load(self):
@@ -49,7 +48,7 @@ class RestorationModel:
         )
         self.bg_upsampler = RealESRGANer(
             scale=2,
-            model_path=ESRGAN_PATH,
+            model_path=Path(self._data_dir) / ESRGAN_PATH,
             model=self.model,
             tile=bg_tile,
             tile_pad=10,
@@ -57,7 +56,7 @@ class RestorationModel:
             half=True,
         )
         self.restorer = GFPGANer(
-            model_path=GFPGAN_PATH,
+            model_path=Path(self._data_dir) / GFPGAN_PATH,
             upscale=upscale,
             arch=arch,
             channel_multiplier=channel,
