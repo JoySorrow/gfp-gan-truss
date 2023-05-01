@@ -65,23 +65,24 @@ class RestorationModel:
 
     def predict(self, request):
         image_b4 = request["image"]
-        image = load_img_from_b64(image_b4)
-        (
-            input_img,
-            cropped_faces,
-            restored_faces,
-            restored_img,
-        ) = self.restore_image(image)
-        if restored_img is not None:
-            rgb_image = rotate_axis(restored_img)
+        try:
+            image = load_img_from_b64(image_b4)
+            (
+                input_img,
+                cropped_faces,
+                restored_faces,
+                restored_img,
+            ) = self.restore_image(image)
+            if restored_img is not None:
+                rgb_image = rotate_axis(restored_img)
 
-            img = Image.fromarray(rgb_image)
+                img = Image.fromarray(rgb_image)
 
-            b64_image_str = convert_to_b64(img)
-            return {"status": "success", "data": b64_image_str, "message": None}
-        else:
-            logger.error(f'Failed to restore image')
-
+                b64_image_str = convert_to_b64(img)
+                return {"status": "success", "data": b64_image_str, "message": None}
+            else:
+                return {"status": "error", "data": None, "message": str(exc)}
+        except Exception as exc:
             return {"status": "error", "data": None, "message": str(exc)}
 
 
@@ -104,7 +105,7 @@ def convert_to_b64(img):
 
 def load_img_from_b64(img_b64: str):
     base64_decoded = base64.b64decode(img_b64)
-    pil_image = Image.open(io.BytesIO(base64_decoded))
+    pil_image = Image.open(BytesIO(base64_decoded))
     image_content = np.array(pil_image)
     image = cv2.imdecode(image_content, cv2.IMREAD_COLOR)
     scale = min(RESIZE_DEFAULT_MAX / image.shape[1], RESIZE_DEFAULT_MAX / image.shape[0])
