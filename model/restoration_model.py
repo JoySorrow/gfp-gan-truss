@@ -107,6 +107,8 @@ def load_img_from_b64(img_b64: str):
     base64_decoded = base64.b64decode(img_b64)
     pil_image = Image.open(BytesIO(base64_decoded))
     image_content = np.array(pil_image)
+
+    # We need to convert from RGB to BGR because PIL interprets colors differently than OpenCV.
     image = cv2.cvtColor(image_content, cv2.COLOR_RGB2BGR)
     scale = min(RESIZE_DEFAULT_MAX / image.shape[1], RESIZE_DEFAULT_MAX / image.shape[0])
     if scale < 1:
