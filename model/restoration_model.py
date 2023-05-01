@@ -64,29 +64,27 @@ class RestorationModel:
         )
 
     def predict(self, request):
-        inputs = request["inputs"]
-        restored_images = []
-        for instance in inputs:
-            try:
-                image = load_img_from_b64(instance["image_b64"])
-                (
-                    input_img,
-                    cropped_faces,
-                    restored_faces,
-                    restored_img,
-                ) = self.restore_image(image)
-                if restored_img is not None:
-                    rgb_image = rotate_axis(restored_img)
+        image_b4 = request["image"]
+        image = load_img_from_b64(image_b4)
+        (
+            input_img,
+            cropped_faces,
+            restored_faces,
+            restored_img,
+        ) = self.restore_image(image)
+        if restored_img is not None:
+            rgb_image = rotate_axis(restored_img)
 
-                    img = Image.fromarray(rgb_image)
+            img = Image.fromarray(rgb_image)
 
-                    b64_image_str = convert_to_b64(img)
-                    restored_images.append(b64_image_str)
-                else:
-                    logger.error(f'Failed to restore image')
-            except Exception as e:
-                logger.exception(e)
-        return {"predictions": restored_images}
+            b64_image_str = convert_to_b64(img)
+            return {"status": "success", "data": b64_image_str, "message": None}
+        else:
+            logger.error(f'Failed to restore image')
+
+            return {"status": "error", "data": None, "message": str(exc)}
+
+
 
     def restore_image(self, input_img):
         cropped_faces, restored_faces, restored_img = self.restorer.enhance(
