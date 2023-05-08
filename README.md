@@ -1,8 +1,10 @@
 # Overview
 
-This is an implementation of TencentARC
-[GFPGAN](https://github.com/TencentARC/GFPGAN). GFPGAN aims at developing a Practical Algorithm for Real-world Face
-Restoration. It leverages rich and diverse priors encapsulated in a pretrained face GAN (e.g., StyleGAN2) for
+This is a [Truss](https://truss.baseten.co/) for serving an implementation of TencentARC
+[GFPGAN](https://github.com/TencentARC/GFPGAN). GFPGAN is an algorithm for real-world face restoration.
+It can be used on old photos of faces to remove blur, and increase clarity and resolution.
+
+It leverages rich and diverse priors encapsulated in a pretrained face GAN (e.g., StyleGAN2) for
 "blind face" restoration.
 
 # Deploying to Baseten
@@ -44,8 +46,8 @@ The model returns a dictionary containing the base64-encoded restored image:
 You can invoke this model on Baseten with the following cURL command (just fill in the model version ID and API Key):
 
 ```
-$ curl -X POST https://app.staging.baseten.co/models/gPGD1q4/predict \
-    -H 'Authorization: Api-Key BnOM5lyd.KARi5zrp0t58R9EzGdY8D45j9Se9WW8u' \
+$ curl -X POST https://app.staging.baseten.co/models/{MODEL_VERSION_ID}/predict \
+    -H 'Authorization: Api-Key {YOUR_API_KEY}' \
     -d '{"image": "{BASE_64_INPUT}"}'
 {"model_id": "gPGD1q4", "model_version_id": "7qkj8lw", "model_output": {"status": "success", "data": "{BASE_64_OUTPUT}", "message": null}}
 ```
