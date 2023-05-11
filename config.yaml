@@ -5,7 +5,10 @@ input_type: Any
 model_class_filename: restoration_model.py
 model_class_name: RestorationModel
 model_framework: custom
-model_metadata: {}
+model_metadata:
+  pretty_name: GFP-GAN
+  tags:
+  - image-restoration
 model_module_dir: model
 model_name: GFP-GAN
 model_type: custom
