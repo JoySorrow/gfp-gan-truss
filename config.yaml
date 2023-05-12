@@ -2,7 +2,7 @@ data_dir: data
 environment_variables: {}
 examples_filename: examples.yaml
 input_type: Any
-description: Restore photos with GFP-GAN. This is an implementation of TencentARC GFP-GAN.
+description: Restore photos with this image-to-image model.
 model_class_filename: restoration_model.py
 model_class_name: RestorationModel
 model_framework: custom
